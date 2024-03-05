@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genesis-api
+  namespace: genesis
+spec:
+  selector:
+    matchLabels:
+      app: genesis-api
+  template:
+    metadata:
+      labels:
+        app: genesis-api
+    spec:
+      containers:
+        - name: genesis-api
+          image: koorinc/genesis:v0.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
