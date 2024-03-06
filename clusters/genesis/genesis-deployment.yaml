@@ -20,3 +20,9 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
+          env:
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: genesis-api
+                  key: database_host
