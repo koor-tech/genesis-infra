@@ -26,3 +26,28 @@ spec:
                 secretKeyRef:
                   name: genesis-api
                   key: database_host
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: genesis-api
+                  key: database_user
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: genesis-api
+                  key: database_password
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: genesis-api
+                  key: database_name
+            - name: DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: genesis-api
+                  key: database_port
+            - name: HETZNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: genesis-api
+                  key: hetzner_token
