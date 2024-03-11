@@ -1,9 +1,0 @@
----
-apiVersion: image.toolkit.fluxcd.io/v1beta2
-kind: ImageRepository
-metadata:
-  name: genesis-api
-  namespace: flux-system
-spec:
-  image: koorinc/genesis
-  interval: 5m0s

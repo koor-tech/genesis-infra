@@ -1,0 +1,12 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: genesis
+  namespace: genesis
+spec:
+  replicas: 3
+  service:
+    type: ClusterIP
+  persistence:
+    storageClassName: rook-ceph-block
+    storage: 20Gi

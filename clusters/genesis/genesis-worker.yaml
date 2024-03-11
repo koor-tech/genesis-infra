@@ -1,52 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: genesis
+  name: worker
   namespace: genesis
 spec:
   selector:
     matchLabels:
-      app: genesis
+      app: worker
   template:
     metadata:
       labels:
-        app: genesis
+        app: worker
     spec:
-      initContainers:
-        - name: migrations
-          image: koorinc/genesis:v0.0.9
-          imagePullPolicy: IfNotPresent
-          command: ['./migrate', 'migrate', 'up']
-          env:
-            - name: DATABASE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_host
-            - name: DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_user
-            - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_password
-            - name: DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_name
-            - name: DATABASE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_port
       containers:
-        - name: genesis
+        - name: worker
           image: koorinc/genesis:v0.0.9
           imagePullPolicy: IfNotPresent
+          command: ['./worker', 'monitor']
           ports:
             - name: http
               containerPort: 8000
@@ -102,12 +72,3 @@ spec:
                 secretKeyRef:
                   name: genesis-default-user
                   key: port
-          volumeMounts:
-            - name: koor-main-store
-              mountPath: /koor/
-              readOnly: false
-      volumes:
-        - name: koor-main-store
-          persistentVolumeClaim:
-            claimName: genesis-cephfs-pvc
-            readOnly: false
