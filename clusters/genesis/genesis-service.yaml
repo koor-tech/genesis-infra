@@ -3,10 +3,6 @@ kind: Service
 metadata:
   name: genesis-api
   namespace: genesis
-  annotations:
-    load-balancer.hetzner.cloud/location: eu-central
-    load-balancer.hetzner.cloud/name: genesis-lb
-    load-balancer.hetzner.cloud/hostname: genesis.koor.tech
 spec:
   selector:
     app: genesis-api
@@ -15,4 +11,4 @@ spec:
       protocol: TCP
       port: 80
       targetPort: http
-  type: LoadBalancer
+  type: ClusterIP
