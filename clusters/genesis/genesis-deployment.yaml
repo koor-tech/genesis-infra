@@ -103,11 +103,11 @@ spec:
                   name: genesis-default-user
                   key: port
           volumeMounts:
-            - name: koor-main-store
+            - name: main-store
               mountPath: /koor/
               readOnly: false
       volumes:
-        - name: koor-main-store
+        - name: main-store
           persistentVolumeClaim:
-            claimName: genesis-cephfs-pvc
+            claimName: genesis-main-store
             readOnly: false
