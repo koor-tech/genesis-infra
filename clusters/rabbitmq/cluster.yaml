@@ -4,9 +4,13 @@ metadata:
   name: genesis
   namespace: genesis
 spec:
+  rabbitmq:
+    additionalPlugins:
+      - rabbitmq_management
   replicas: 3
   service:
     type: ClusterIP
   persistence:
-    storageClassName: rook-ceph-block
+    storageClassName: rook-ceph-fs
     storage: 20Gi
+

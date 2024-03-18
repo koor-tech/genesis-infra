@@ -15,4 +15,4 @@ spec:
           service:
             name: genesis-api
             port:
-              number: 8000
+              number: 80

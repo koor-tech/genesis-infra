@@ -1,111 +1,91 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: genesis
+  name: worker
   namespace: genesis
 spec:
   selector:
     matchLabels:
-      app: genesis
+      app: worker
   template:
     metadata:
       labels:
-        app: genesis
+        app: worker
     spec:
-      initContainers:
-        - name: migrations
-          image: koorinc/genesis:v0.0.9
-          imagePullPolicy: IfNotPresent
-          command: ['./migrate', 'migrate', 'up']
-          env:
-            - name: DATABASE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_host
-            - name: DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_user
-            - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_password
-            - name: DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_name
-            - name: DATABASE_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: genesis-api
-                  key: database_port
       containers:
-        - name: genesis
-          image: koorinc/genesis:v0.0.9
+        - name: worker
+          image: koorinc/genesis:v0.0.18
           imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 8000
-              protocol: TCP
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            if [ ! -f config.yaml ]; then
+              /usr/local/bin/setup.sh
+            fi;
+            ./genesis monitor
           env:
-            - name: DATABASE_HOST
+            - name: GENESIS_DATABASE_HOST
               valueFrom:
                 secretKeyRef:
                   name: genesis-api
                   key: database_host
-            - name: DATABASE_USER
+            - name: GENESIS_DATABASE_USER
               valueFrom:
                 secretKeyRef:
                   name: genesis-api
                   key: database_user
-            - name: DATABASE_PASSWORD
+            - name: GENESIS_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: genesis-api
                   key: database_password
-            - name: DATABASE_NAME
+            - name: GENESIS_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
                   name: genesis-api
                   key: database_name
-            - name: DATABASE_PORT
+            - name: GENESIS_DATABASE_PORT
               valueFrom:
                 secretKeyRef:
                   name: genesis-api
                   key: database_port
-            - name: HETZNER_TOKEN
+            - name: GENESIS_HETZNER_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: genesis-api
                   key: hetzner_token
-            - name: RABBITMQ_HOST
+            - name: GENESIS_HCLOUD_TOKEN
+              valueFrom:
+                 secretKeyRef:
+                   name: genesis-api
+                   key: hetzner_token
+            - name: GENESIS_RABBITMQ_HOST
               valueFrom:
                 secretKeyRef:
-                  name: genesis-default-user
-                  key: host
-            - name: RABBITMQ_USER
+                  name: genesis-api
+                  key: rabbitmq_host
+            - name: GENESIS_RABBITMQ_USER
               valueFrom:
                 secretKeyRef:
                   name: genesis-default-user
                   key: username
-            - name: RABBITMQ_PASSWORD
+            - name: GENESIS_RABBITMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: genesis-default-user
                   key: password
-            - name: RABBITMQ_PORT
+            - name: GENESIS_RABBITMQ_PORT
               valueFrom:
                 secretKeyRef:
                   name: genesis-default-user
                   key: port
+          securityContext:
+            runAsUser: 0
           volumeMounts:
             - name: main-store
               mountPath: /koor/
               readOnly: false
+
       volumes:
         - name: main-store
           persistentVolumeClaim:
